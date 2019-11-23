@@ -9,8 +9,14 @@ from tensorflow.contrib.rnn import LSTMCell
 class BiLSTM_CRF():
     def __init__(self):
     """Init paramaters"""
-        self.batch_size = 0
-        self.epoch = 0
-        self.hidden_dim = 0
-        self.embeddings = 0
-    def 
+        
+    def build_model(self):
+        # placeholder
+        self.word_ids = tf.placeholder(tf.int32, shape = [None, None], name = "word_ids")
+        self.labels = tf.placeholder(tf.int32, shape = [None, None], name = "labels")
+        self.sequence_lengths = tf.placeholder(tf.int32, shape = [None], name = "sequence_lengths")
+        self.dropout = tf.placeholder(tf.int32, shape = [None], name = "dropout")
+
+        # build look up layer
+        with tf.variable_scope("lookup"):
+            
