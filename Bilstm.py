@@ -23,4 +23,19 @@ class BiLSTM_CRF():
         # build look up layer
         with tf.variable_scope("lookup"):
             embedding = tf.Variable(self.embeddings, dtype = tf.float32, traina)
-
+            word_embeddings = tf.nn.embedding_lookup(params = embeddings, 
+                                                        ids=self.word_ids,
+                                                        name="word_embeddings")
+            self.word_embeddings = tf.nn.dropout(word_embeddings, self.dropout)
+        # build bilstm
+        with tf.variable_scope("bilstm"):
+            cell_fw = LSTMCell(self.hidden_dim)
+            cell_bw = LSTMCell(self.hidden_dim)
+            (output_fw, output_bw), _ = tf.nn.bidirectional_dynamic_rnn(
+                cell_bw = cell_bw,
+                cell_fw = cell_fw,
+                inputs = self.word_embeddings,
+                sequence_length = self.sequence_lengths,
+                dtype = tf.float32
+            )
+            output = tf.concat([output_fw, output_bw, axis = 1])
