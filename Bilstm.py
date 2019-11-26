@@ -38,4 +38,13 @@ class BiLSTM_CRF():
                 sequence_length = self.sequence_lengths,
                 dtype = tf.float32
             )
-            output = tf.concat([output_fw, output_bw, axis = 1])
+            output = tf.concat([output_fw, output_bw, axis = -1])
+            output = tf.nn.dropout(output, self.dropout)
+        
+        # build project layer
+        with tf.variable_scope("project"):
+            W = tf.get_variable(
+                name = "W",
+                shape = [2 * self.hidden_dim, self.num_tags],
+                initializer = tf.contrib.layers.xavier_initializer()
+            )
